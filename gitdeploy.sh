@@ -14,6 +14,11 @@
 
 CURRENTDIR=`pwd`
 
+# Uses ANT for YUI compressor
+# `sudo port install apache-ant`
+YUICOMPRESSOR_PATH="$CURRENTDIR/plugin-packager/vendor/yuicompressor/build/yuicompressor-2.4.8.jar"
+
+
 # Git Pull
 cd "$1"
 echo "-------- GIT PULL --------"
@@ -35,6 +40,16 @@ find "/tmp/$2" -name ".git*" -exec rm -rf {} \;
 find "/tmp/$2" -name ".DS_Store" -exec rm -rf {} \;
 find "/tmp/$2" -name ".svn*" -exec rm -rf {} \;
 find "/tmp/$2" -name "test" -exec rm -rf {} \;
+
+# Compress JS files
+compressjs () {
+	SOURCE=${1}
+	DESTINATION=${SOURCE/\./.min\.} #replace .js with .min.js
+	java -jar $YUICOMPRESSOR_PATH $SOURCE -o $DESTINATION
+}
+find "/tmp/$2" \( -iname "*.js" ! -iname "*.min.js" \) | while read file
+	do compressjs "$file"
+done
 
 
 # Zip the file
