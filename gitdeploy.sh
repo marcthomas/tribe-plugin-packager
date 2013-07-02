@@ -1,7 +1,16 @@
+# Script to package plugins for public release.
+#
+# @author Peter Chester of Modern Tribe
+#
+# This script is designed to be run from outside of the plugin-packager folder. It will copy
+# the plugin to /tmp, process it and zip it and return it as a zip to the plugins directory
+#
+# Parameters:
 # $1 path to plugin
 # $2 destination folder name
 # $3 version
-# Usage: sh gitdeploy.sh /path/to/plugin/repo/folder my-plugin-name 1.0.1
+#
+# Usage: sh plugin-packager/gitdeploy.sh /path/to/plugin/repo/folder my-plugin-name 1.0.1
 
 CURRENTDIR=`pwd`
 
@@ -21,18 +30,22 @@ cd "/tmp/$2"
 
 # Clean up hidden files
 echo "-------- CLEAN FILES --------"
+find "/tmp/$2" -name ".idea*" -exec rm -rf {} \;
 find "/tmp/$2" -name ".git*" -exec rm -rf {} \;
 find "/tmp/$2" -name ".DS_Store" -exec rm -rf {} \;
 find "/tmp/$2" -name ".svn*" -exec rm -rf {} \;
-cd ../
+find "/tmp/$2" -name "test" -exec rm -rf {} \;
+
 
 # Zip the file
+cd "/tmp"
 echo "-------- ZIP IT UP --------"
-zip "$2.$3.zip" "$2"
-rm -rf "/tmp/$2"
+echo "zip -r /tmp/$2.$3.zip $2"
+zip -r "/tmp/$2.$3.zip" $2
 
 # Move back to initial directory
 echo "-------- BRING IT HOME --------"
-mv "$2.$3.zip" $CURRENTDIR
+mv "/tmp/$2.$3.zip" $CURRENTDIR
+rm -rf "/tmp/$2"
 cd $CURRENTDIR
 echo "$CURRENTDIR/$2.$3.zip"
