@@ -1,4 +1,4 @@
-# [Modern Tribe](http://tri.be) Plugin Packager
+# Modern Tribe Plugin Packager
 
 This is a simple script designed to help the Modern Tribe team package WordPress premium plugins for deployment.
 
@@ -17,4 +17,4 @@ This tool leverages the great innovations and work in the following libraries an
 
 ## Copyright & License
 
-Copyright (C) 2013 Peter Chester of Modern Tribe, Inc. under the [GPL3 license](http://www.gnu.org/licenses/gpl-3.0.txt)
+Copyright (C) 2013 Peter Chester of [Modern Tribe, Inc.](http://tri.be) under the [GPL3 license](http://www.gnu.org/licenses/gpl-3.0.txt)
