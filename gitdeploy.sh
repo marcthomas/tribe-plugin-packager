@@ -16,7 +16,8 @@ CURRENTDIR=`pwd`
 
 # Uses ANT for YUI compressor
 # `sudo port install apache-ant`
-YUICOMPRESSOR_PATH="$CURRENTDIR/plugin-packager/vendor/yuicompressor/build/yuicompressor-2.4.8.jar"
+YUICOMPRESSOR_PATH="$CURRENTDIR/plugin-packager/vendor/yuicompressor-2.4.8.jar"
+CLOSURE_PATH="$CURRENTDIR/plugin-packager/vendor/closure-compiler.jar"
 
 
 # Git Pull
@@ -39,18 +40,34 @@ find "/tmp/$2" -name ".idea*" -exec rm -rf {} \;
 find "/tmp/$2" -name ".git*" -exec rm -rf {} \;
 find "/tmp/$2" -name ".DS_Store" -exec rm -rf {} \;
 find "/tmp/$2" -name ".svn*" -exec rm -rf {} \;
-find "/tmp/$2" -name "test" -exec rm -rf {} \;
+#rm -rf "/tmp/$2/test"
+find "/tmp/$2" -name "tests" -exec rm -rf {} \;
 
 # Compress JS files
-compressjs () {
+echo "-------- COMPRESSING JS FILES --------"
+compress_js () {
 	SOURCE=${1}
 	DESTINATION=${SOURCE/\./.min\.} #replace .js with .min.js
-	java -jar $YUICOMPRESSOR_PATH $SOURCE -o $DESTINATION
+	echo $SOURCE
+	java -jar $CLOSURE_PATH --compilation_level SIMPLE_OPTIMIZATIONS --define=''tribe_debug=false'' --jscomp_off=unknownDefines --js_output_file $DESTINATION $SOURCE
+	echo $DESTINATION
 }
 find "/tmp/$2" \( -iname "*.js" ! -iname "*.min.js" \) | while read file
-	do compressjs "$file"
+	do compress_js "$file"
 done
 
+# Compress CSS files
+echo "-------- COMPRESSING CSS FILES --------"
+compress_css () {
+	SOURCE=${1}
+	DESTINATION=${SOURCE/\./.min\.} #replace .css with .min.css
+	echo $SOURCE
+	java -jar $YUICOMPRESSOR_PATH $SOURCE -o $DESTINATION
+	echo $DESTINATION
+}
+find "/tmp/$2" \( -iname "*.css" ! -iname "*.min.css" \) | while read file
+	do compress_css "$file"
+done
 
 # Zip the file
 cd "/tmp"
